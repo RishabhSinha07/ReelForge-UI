@@ -13,7 +13,8 @@ function App() {
   const [formData, setFormData] = useState({
     idea: '',
     theme: 'cinematic',
-    name: ''
+    name: '',
+    duration: 30
   });
 
   const fetchReels = async () => {
@@ -41,7 +42,12 @@ function App() {
     try {
       setGenerating(true);
       await axios.post(`${API_BASE_URL}/generate`, formData);
-      setFormData({ idea: '', theme: 'cinematic', name: '' });
+      setFormData({
+        idea: '',
+        theme: 'cinematic',
+        name: '',
+        duration: 30
+      });
       fetchReels();
     } catch (err) {
       alert("Error starting generation: " + (err.response?.data?.detail || err.message));
@@ -108,16 +114,30 @@ function App() {
             className="glass-card !p-8"
           >
             <form onSubmit={handleGenerate} className="space-y-6">
-              <div>
-                <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">REEL NAME</label>
-                <input
-                  type="text"
-                  placeholder="e.g. SpaceFarewell"
-                  className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:outline-none focus:border-primary/50 transition-colors"
-                  value={formData.name}
-                  onChange={e => setFormData({ ...formData, name: e.target.value })}
-                  required
-                />
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">REEL NAME</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. SpaceFarewell"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:outline-none focus:border-primary/50 transition-colors"
+                    value={formData.name}
+                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">DURATION (sec)</label>
+                  <input
+                    type="number"
+                    min="10"
+                    max="60"
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:outline-none focus:border-primary/50 transition-colors"
+                    value={formData.duration}
+                    onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) || 10 })}
+                    required
+                  />
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">THE IDEA</label>
@@ -129,6 +149,7 @@ function App() {
                   required
                 />
               </div>
+
               <div>
                 <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">THEME</label>
                 <div className="grid grid-cols-3 gap-3">
@@ -144,6 +165,7 @@ function App() {
                   ))}
                 </div>
               </div>
+
               <button
                 disabled={generating}
                 className="btn-primary w-full flex items-center justify-center gap-3"

@@ -14,7 +14,8 @@ function App() {
     idea: '',
     theme: 'cinematic',
     name: '',
-    duration: 30
+    duration: 30,
+    mode: 'story'
   });
 
   const fetchReels = async () => {
@@ -46,7 +47,8 @@ function App() {
         idea: '',
         theme: 'cinematic',
         name: '',
-        duration: 30
+        duration: 30,
+        mode: 'story'
       });
       fetchReels();
     } catch (err) {
@@ -139,31 +141,46 @@ function App() {
                   />
                 </div>
               </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">REEL MODE</label>
+                  <div className="flex gap-2 p-1 bg-white/5 border border-white/10 rounded-2xl">
+                    {['story', 'news'].map(m => (
+                      <button
+                        key={m}
+                        type="button"
+                        onClick={() => setFormData({ ...formData, mode: m })}
+                        className={`flex-1 py-3 rounded-xl transition-all font-bold uppercase text-xs tracking-wider ${formData.mode === m ? 'bg-white text-black shadow-lg' : 'text-white/40 hover:text-white'}`}
+                      >
+                        {m}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">THEME</label>
+                  <select
+                    className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 focus:outline-none focus:border-primary/50 transition-colors appearance-none"
+                    value={formData.theme}
+                    onChange={e => setFormData({ ...formData, theme: e.target.value })}
+                  >
+                    {['cinematic', 'mystery', 'vibrant', 'cyberpunk', 'cartoon'].map(t => (
+                      <option key={t} value={t} className="bg-[#050505]">{t.charAt(0).toUpperCase() + t.slice(1)}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">THE IDEA</label>
                 <textarea
-                  placeholder="The final sunset seen from a dying space station..."
+                  placeholder={formData.mode === 'news' ? "NASA confirms liquid water on Mars surface..." : "The final sunset seen from a dying space station..."}
                   className="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-4 h-32 resize-none focus:outline-none focus:border-primary/50 transition-colors"
                   value={formData.idea}
                   onChange={e => setFormData({ ...formData, idea: e.target.value })}
                   required
                 />
-              </div>
-
-              <div>
-                <label className="block text-sm font-semibold text-white/50 mb-2 ml-1">THEME</label>
-                <div className="grid grid-cols-3 gap-3">
-                  {['cinematic', 'mystery', 'vibrant'].map(t => (
-                    <button
-                      key={t}
-                      type="button"
-                      onClick={() => setFormData({ ...formData, theme: t })}
-                      className={`py-3 rounded-xl border transition-all ${formData.theme === t ? 'bg-primary border-primary shadow-lg shadow-primary/20' : 'bg-white/5 border-white/10 hover:border-white/20'}`}
-                    >
-                      {t.charAt(0).toUpperCase() + t.slice(1)}
-                    </button>
-                  ))}
-                </div>
               </div>
 
               <button
@@ -217,8 +234,11 @@ function App() {
                         <div className="relative z-10 w-16 h-16 bg-white/10 backdrop-blur-2xl rounded-full flex items-center justify-center scale-90 group-hover:scale-100 transition-all duration-300 opacity-0 group-hover:opacity-100 shadow-2xl">
                           <Play className="fill-white text-white translate-x-0.5" size={28} />
                         </div>
-                        <div className="absolute top-4 right-4 z-10">
-                          <span className="px-3 py-1 bg-green-500/20 text-green-400 text-xs font-bold rounded-full backdrop-blur-md border border-green-500/30">READY</span>
+                        <div className="absolute top-4 right-4 z-10 flex flex-col gap-2 items-end">
+                          <span className="px-3 py-1 bg-green-500/20 text-green-400 text-[10px] font-black rounded-full backdrop-blur-md border border-green-500/30">READY</span>
+                          <span className={`px-3 py-1 ${reel.mode === 'news' ? 'bg-blue-500/20 text-blue-400 border-blue-500/30' : 'bg-purple-500/20 text-purple-400 border-purple-500/30'} text-[10px] font-black rounded-full backdrop-blur-md border uppercase`}>
+                            {reel.mode || 'story'}
+                          </span>
                         </div>
                       </>
                     ) : (
